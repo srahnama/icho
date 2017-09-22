@@ -16,12 +16,14 @@ Route::get('/', function () {
     return view('index');
 });
 
-Route::resource('/messages', 'MessageController');
+Route::resource('/messages', 'MessageController')->middleware('auth');
 Route::get('/user', function () {
     return view('users');
-})->name('allUsers');
-Route::resource('/users', 'UserController');
-Route::resource('/follow', 'FollowUserController');
+})->name('allUsers')->middleware('auth');
+Route::resource('/users', 'UserController')->middleware('auth');
+Route::resource('/follow', 'FollowUserController')->middleware('auth');
+Route::resource('/remessage', 'MessageRetweetController')->middleware('auth');
+Route::resource('/reply', 'MessageReplieController')->middleware('auth');
 
 
 

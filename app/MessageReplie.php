@@ -12,12 +12,9 @@ use Illuminate\Database\Eloquent\Model;
 class MessageReplie extends Model
 {
     //
-    public function user()
+
+    public function messages()
     {
-        return  $this->belongsTo('App\User');
-    }
-    public function message()
-    {
-        return  $this->belongsTo('App\Message');
+        return  $this->belongsTo('App\Message','message_id','id');
     }
 }

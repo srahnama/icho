@@ -23,7 +23,8 @@ class DatabaseSeeder extends Seeder
 
             //'messages' table
             DB::table('messages')->insert([
-                'text'     => str_random(100),
+                'text'     => str_random(70),
+                'answer'     => false,
                 'user_id'    => ($i),
             ]);
 
@@ -32,9 +33,8 @@ class DatabaseSeeder extends Seeder
 
             //'messages' table
             DB::table('message_replies')->insert([
-                'text'     => str_random(100),
-                'message_id' => ($j),
-                'user_id'    => ($i),
+
+
             ]);
             DB::table('message_retweets')->insert([
                 'message_id' => ($j),

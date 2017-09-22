@@ -43,8 +43,9 @@ class User extends Authenticatable
     //REturn list of users that user following
     public function scopeUserfollowing($query){
 
-
-        $ids =$query->find(Auth::user()->id)->following->pluck('follow_user_id')->all();
+        // get user following ids
+        $ids =$query->find(Auth::user()->id)->following->pluck('follow_user_id')->all();//
+        //add current user login id to following ids
         array_push($ids,intval(Auth::user()->id));
         return ($ids);
 

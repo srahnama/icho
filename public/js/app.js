@@ -1058,19 +1058,49 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
     data: function data() {
         return {
-            user_id: [],
-            errors: [],
-            message: {
+            ansers: [],
+            user_id: [], //id of user login
+            errors: [], //errors of messages for sending to store
+            message: { //one message
                 text: ''
             },
-            messages: []
+            messages: [], //all messages
+            remessages: []
         };
     },
     created: function created() {
+
         this.fetchMessages();
     },
 
@@ -1080,35 +1110,89 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
             //fetch messages and user id
             this.$http.get('/messages').then(function (response) {
-                _this.messages = response.data.messages;
-                _this.user_id = response.data.user_id;
-            });
+                _this.messages = response.data.messages; //get all messages in database that should be seen by user
+                _this.user_id = response.data.user_id; //get id of login user
+                _this.fetchReplies();
+            }).then();
+
+            this.fetchReMessages();
         },
         createMessage: function createMessage() {
             var _this2 = this;
 
             //store new message
             this.$http.post('/messages/', this.message).then(function (response) {
-                _this2.messages.push(response.data.message);
+                _this2.messages.push(response.data.message); //add new message to messages array
                 //                    this.message={text:''};
             }, function (response) {
-                _this2.errors = response.data.errors;
+                _this2.errors = response.data.errors; //get errors of message validation
                 //                    console.log(response.data.errors);
             });
         },
         deleteMessage: function deleteMessage(message) {
             var _this3 = this;
 
+            //delete message
             this.$http.delete('/messages/' + message.id).then(function (response) {
-                var index = _this3.messages.indexOf(message);
-                _this3.messages.splice(index, 1);
+                var index = _this3.messages.indexOf(message); //get index of message that was deleted
+                _this3.messages.splice(index, 1); //delete message in array messages
                 console.log(response.data);
             });
+        },
+        fetchReMessages: function fetchReMessages() {
+            var _this4 = this;
+
+            //work like retweet
+            this.$http.get('remessage').then(function (response) {
+                var a = response.data.messages;
+                var b = _this4.messages;
+                _this4.messages = b.concat(a);
+                // console.log(this.messages);
+            });
+        },
+        reMessage: function reMessage(message) {
+            var _this5 = this;
+
+            this.$http.post('/remessage/', message).then(function (response) {
+                _this5.messages.push(response.data.message);
+                console.log(response.data.message);
+            });
+        },
+        unReMessage: function unReMessage(message) {
+            var _this6 = this;
+
+            this.$http.delete('/remessage/' + message.id).then(function (response) {
+                var index = _this6.messages.indexOf(message); //get index of message that was deleted
+                _this6.messages.splice(index, 1);
+
+                console.log(response.data.message);
+            });
+        },
+        fetchReplies: function fetchReplies() {
+            var _this7 = this;
+
+            //work like retweet
+            console.log(this.messages);
+            for (var i = 0; i < this.messages.length; i++) {
+                if (this.messages[i]['answer']) {
+                    this.$http.get('/reply/' + this.messages[i].id).then(function (response) {
+                        var index = _this7.messages.indexOf(_this7.messages[i]);
+                        for (var i = 0; i < response.data.messages.length; i++) {
+                            _this7.messages.splice(index - 1, 0, response.data.messages[i]);
+                        }
+
+                        console.log(_this7.messages);
+                    });
+                }
+            }
+        },
+        replyToMessage: function replyToMessage() {//reply to message
+
         }
     },
     mounted: function mounted() {
 
-        console.log(this.messages);
+        //console.log(this.messages);
     }
 });
 
@@ -1168,7 +1252,19 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
   }, _vm._l((_vm.messages), function(message) {
     return _c('div', {
       staticClass: "panel-body"
-    }, [_vm._v("\n                    " + _vm._s(message.text) + "\n                    "), _c('br'), _vm._v(" "), (message.user_id == _vm.user_id) ? _c('div', {
+    }, [(message.answer) ? _c('div', {
+      staticClass: "form-group",
+      staticStyle: {
+        "background": "lightgreen",
+        "border": "1px solid red"
+      }
+    }, [_c('span', [_vm._v("reply ")]), _vm._v(" "), _c('div', {
+      staticClass: "info"
+    }, [_vm._v("\n                            " + _vm._s(message.text) + "\n                        ")])]) : _c('div', {
+      staticClass: "form-group"
+    }, [_vm._v("\n\n                        " + _vm._s(message.text) + "\n                    ")]), _vm._v(" "), (message.retweeter != null) ? _c('div', {
+      staticClass: "form-group"
+    }, [_c('span', [_vm._v("retweet by : " + _vm._s(message.retweeter_name))])]) : _vm._e(), _vm._v(" "), _c('br'), _vm._v(" "), (message.user_id == _vm.user_id) ? _c('div', {
       staticClass: "form-group"
     }, [_c('button', {
       staticClass: "btn btn-danger",
@@ -1180,7 +1276,47 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
           _vm.deleteMessage(message)
         }
       }
-    }, [_vm._v("delete")])]) : _vm._e(), _vm._v("\n                    " + _vm._s(message.user_id) + "\n                ")])
+    }, [_vm._v("delete")])]) : _vm._e(), _vm._v(" "), (message.retweeter != _vm.user_id) ? _c('div', {
+      staticClass: "form-group"
+    }, [_c('div', {
+      staticClass: "form-group"
+    }, [_c('button', {
+      staticClass: "btn btn-info",
+      attrs: {
+        "type": "submit"
+      },
+      on: {
+        "click": function($event) {
+          _vm.reMessage(message)
+        }
+      }
+    }, [_vm._v("retweet")])])]) : _c('div', {
+      staticClass: "form-group"
+    }, [_c('div', {
+      staticClass: "form-group"
+    }, [_c('button', {
+      staticClass: "btn btn-danger",
+      attrs: {
+        "type": "submit"
+      },
+      on: {
+        "click": function($event) {
+          _vm.unReMessage(message)
+        }
+      }
+    }, [_vm._v("unretweet")])])]), _vm._v(" "), _c('div', {
+      staticClass: "form-group"
+    }, [_c('button', {
+      staticClass: "btn btn-primary",
+      attrs: {
+        "type": "submit"
+      },
+      on: {
+        "click": function($event) {
+          _vm.replyToMessage(message)
+        }
+      }
+    }, [_vm._v("reply")])]), _vm._v("\n                    " + _vm._s(message.user_id) + "\n                ")])
   }))])])
 },staticRenderFns: [function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
   return _c('div', {
