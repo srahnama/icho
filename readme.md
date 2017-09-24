@@ -3,10 +3,10 @@
 
 
 
-*TODO:
-    
-    ** add reply
-    ** add likes
-    ** add Roles
+* TODO:
+    * ~~add reply~~
+        *add reply for reply
+    * add likes
+    * add Roles
     
     

@@ -71,7 +71,7 @@
 
 
 var bind = __webpack_require__(3);
-var isBuffer = __webpack_require__(27);
+var isBuffer = __webpack_require__(30);
 
 /*global toString:true*/
 
@@ -478,7 +478,7 @@ module.exports = function normalizeComponent (
 /* WEBPACK VAR INJECTION */(function(process) {
 
 var utils = __webpack_require__(0);
-var normalizeHeaderName = __webpack_require__(30);
+var normalizeHeaderName = __webpack_require__(33);
 
 var DEFAULT_CONTENT_TYPE = {
   'Content-Type': 'application/x-www-form-urlencoded'
@@ -568,7 +568,7 @@ utils.forEach(['post', 'put', 'patch'], function forEachMethodWithData(method) {
 
 module.exports = defaults;
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(29)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(32)))
 
 /***/ }),
 /* 3 */
@@ -596,12 +596,12 @@ module.exports = function bind(fn, thisArg) {
 
 
 var utils = __webpack_require__(0);
-var settle = __webpack_require__(31);
-var buildURL = __webpack_require__(33);
-var parseHeaders = __webpack_require__(34);
-var isURLSameOrigin = __webpack_require__(35);
+var settle = __webpack_require__(34);
+var buildURL = __webpack_require__(36);
+var parseHeaders = __webpack_require__(37);
+var isURLSameOrigin = __webpack_require__(38);
 var createError = __webpack_require__(5);
-var btoa = (typeof window !== 'undefined' && window.btoa && window.btoa.bind(window)) || __webpack_require__(36);
+var btoa = (typeof window !== 'undefined' && window.btoa && window.btoa.bind(window)) || __webpack_require__(39);
 
 module.exports = function xhrAdapter(config) {
   return new Promise(function dispatchXhrRequest(resolve, reject) {
@@ -698,7 +698,7 @@ module.exports = function xhrAdapter(config) {
     // This is only done if running in a standard browser environment.
     // Specifically not if we're in a web worker, or react-native.
     if (utils.isStandardBrowserEnv()) {
-      var cookies = __webpack_require__(37);
+      var cookies = __webpack_require__(40);
 
       // Add xsrf header
       var xsrfValue = (config.withCredentials || isURLSameOrigin(config.url)) && config.xsrfCookieName ?
@@ -782,7 +782,7 @@ module.exports = function xhrAdapter(config) {
 "use strict";
 
 
-var enhanceError = __webpack_require__(32);
+var enhanceError = __webpack_require__(35);
 
 /**
  * Create an Error with the specified message, config, error code, request and response.
@@ -843,7 +843,7 @@ module.exports = Cancel;
 /***/ (function(module, exports, __webpack_require__) {
 
 __webpack_require__(9);
-module.exports = __webpack_require__(45);
+module.exports = __webpack_require__(48);
 
 
 /***/ }),
@@ -856,7 +856,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__components_Example_vue___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0__components_Example_vue__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__components_Message_vue__ = __webpack_require__(13);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__components_Message_vue___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1__components_Message_vue__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__components_Users_vue__ = __webpack_require__(16);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__components_Users_vue__ = __webpack_require__(19);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__components_Users_vue___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_2__components_Users_vue__);
 
 /**
@@ -868,7 +868,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
 
 
-__webpack_require__(19);
+__webpack_require__(22);
 // window.Vue = require('vue');
 // var Vue = require('vue');
 Vue.http.headers.common['X-CSRF-TOKEN'] = window.Laravel.csrfToken;
@@ -986,7 +986,7 @@ var Component = __webpack_require__(1)(
   /* script */
   __webpack_require__(14),
   /* template */
-  __webpack_require__(15),
+  __webpack_require__(18),
   /* styles */
   null,
   /* scopeId */
@@ -1023,6 +1023,45 @@ module.exports = Component.exports
 
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__Reply_vue__ = __webpack_require__(15);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__Reply_vue___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0__Reply_vue__);
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 //
 //
 //
@@ -1086,10 +1125,14 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 
+
+
 /* harmony default export */ __webpack_exports__["default"] = ({
+    props: ['user'],
     data: function data() {
         return {
-            ansers: [],
+            to_reply: false,
+            answers: [],
             user_id: [], //id of user login
             errors: [], //errors of messages for sending to store
             message: { //one message
@@ -1099,9 +1142,15 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             remessages: []
         };
     },
+
+
+    components: { Reply: __WEBPACK_IMPORTED_MODULE_0__Reply_vue___default.a },
     created: function created() {
 
-        this.fetchMessages();
+        this.$on('loadedMessages', function () {
+            this.fetchReplies();
+            this.fetchReMessages();
+        });
     },
 
     methods: {
@@ -1112,10 +1161,8 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             this.$http.get('/messages').then(function (response) {
                 _this.messages = response.data.messages; //get all messages in database that should be seen by user
                 _this.user_id = response.data.user_id; //get id of login user
-                _this.fetchReplies();
+                _this.$emit('loadedMessages');
             }).then();
-
-            this.fetchReMessages();
         },
         createMessage: function createMessage() {
             var _this2 = this;
@@ -1174,23 +1221,46 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             //work like retweet
             console.log(this.messages);
             for (var i = 0; i < this.messages.length; i++) {
+                this.messages[i]['reply'] = false;
+                this.messages[i]['messages'] = [];
                 if (this.messages[i]['answer']) {
+                    var index = this.messages.indexOf(this.messages[i]);
                     this.$http.get('/reply/' + this.messages[i].id).then(function (response) {
-                        var index = _this7.messages.indexOf(_this7.messages[i]);
-                        for (var i = 0; i < response.data.messages.length; i++) {
-                            _this7.messages.splice(index - 1, 0, response.data.messages[i]);
-                        }
 
-                        console.log(_this7.messages);
+                        //                            for (var i = 0; i < response.data.messages.length; i++) {
+                        //                                this.messages.splice(index - 1, 0, response.data.messages[i]);
+                        //                            }
+
+                        // this.messages[i].concat(response.data);
+                        _this7.messages[index]['messages'] = response.data.messages;
                     });
                 }
             }
+            console.log(this.messages);
         },
-        replyToMessage: function replyToMessage() {//reply to message
-
+        deleteReply: function deleteReply(message, reply) {
+            //delete message
+            this.deleteMessage(reply);
+            this.$http.delete('/reply/' + reply.id + '/' + message.id).then(function (response) {
+                //let index = this.messages.indexOf(message);//get index of message that was deleted
+                //let index1 = this.messages[index].indexOf(reply);//delete message in array messages
+                //   this.messages[index].splice(index1, 1);//delete message in array messages
+                console.log(response.data);
+            });
+        },
+        toReply: function toReply(message) {
+            //reply to message
+            var index = this.messages.indexOf(message);
+            //this.$set(message.reply , !message.reply);
+            this.messages[index].reply = !this.messages[index].reply;
+            // console.log(!this.messages[index].reply);
+            this.$forceUpdate();
+            //alert(this.messages[index].reply);
         }
     },
     mounted: function mounted() {
+
+        this.fetchMessages();
 
         //console.log(this.messages);
     }
@@ -1198,6 +1268,187 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
 /***/ }),
 /* 15 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var disposed = false
+var Component = __webpack_require__(1)(
+  /* script */
+  __webpack_require__(16),
+  /* template */
+  __webpack_require__(17),
+  /* styles */
+  null,
+  /* scopeId */
+  null,
+  /* moduleIdentifier (server only) */
+  null
+)
+Component.options.__file = "/home/mrrobot/laravel/icho/resources/assets/js/components/Reply.vue"
+if (Component.esModule && Object.keys(Component.esModule).some(function (key) {return key !== "default" && key.substr(0, 2) !== "__"})) {console.error("named exports are not supported in *.vue files.")}
+if (Component.options.functional) {console.error("[vue-loader] Reply.vue: functional components are not supported with templates, they should use render functions.")}
+
+/* hot reload */
+if (false) {(function () {
+  var hotAPI = require("vue-hot-reload-api")
+  hotAPI.install(require("vue"), false)
+  if (!hotAPI.compatible) return
+  module.hot.accept()
+  if (!module.hot.data) {
+    hotAPI.createRecord("data-v-ec81d276", Component.options)
+  } else {
+    hotAPI.reload("data-v-ec81d276", Component.options)
+  }
+  module.hot.dispose(function (data) {
+    disposed = true
+  })
+})()}
+
+module.exports = Component.exports
+
+
+/***/ }),
+/* 16 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
+/* harmony default export */ __webpack_exports__["default"] = ({
+    data: function data() {
+        return {
+            errors: [],
+            myid: 0,
+            message: { 'text': '' }
+
+        };
+    },
+
+
+    props: ['messages', 'id', 'user'],
+    methods: {
+        createReply: function createReply() {
+            var _this = this;
+
+            var id = 0;
+            this.$http.post('/messages/', this.message).then(function (response) {
+                _this.messages.push(response.data.message); //add new message to messages array
+                console.log(response.data.message);
+                //                    this.message={text:''};
+                _this.$http.post('/reply/', [_this.id, response.data.message.id]).then(function (response) {
+                    console.log(response.data);
+                });
+            }, function (response) {
+                _this.errors = response.data.errors; //get errors of message validation
+                //                    console.log(response.data.errors);
+            });
+        }
+    },
+    mounted: function mounted() {
+        console.log('Reply');
+    }
+});
+
+/***/ }),
+/* 17 */
+/***/ (function(module, exports, __webpack_require__) {
+
+module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
+  return _c('div', {
+    staticClass: "container"
+  }, [_c('div', {
+    staticClass: "row"
+  }, [_c('div', {
+    staticClass: "col-md-8 col-md-offset-2"
+  }, [_c('div', {
+    staticClass: "panel panel-default"
+  }, [_c('div', {
+    staticClass: "panel-heading"
+  }, [_vm._v("Reply Component")]), _vm._v(" "), _c('div', {
+    staticClass: "panel-body",
+    staticStyle: {
+      "color": "red"
+    }
+  }, [_c('form', {
+    on: {
+      "submit": function($event) {
+        $event.preventDefault();
+        _vm.createReply($event)
+      }
+    }
+  }, [_c('div', {
+    class: {
+      'form-group}': true, 'has-error': _vm.errors.text
+    }
+  }, [_c('textarea', {
+    directives: [{
+      name: "model",
+      rawName: "v-model",
+      value: (_vm.message.text),
+      expression: "message.text"
+    }],
+    staticClass: "form-control",
+    attrs: {
+      "type": "text",
+      "placeholder": "write something"
+    },
+    domProps: {
+      "value": (_vm.message.text)
+    },
+    on: {
+      "input": function($event) {
+        if ($event.target.composing) { return; }
+        _vm.message.text = $event.target.value
+      }
+    }
+  })]), _vm._v(" "), _vm._m(0)])])])])])])
+},staticRenderFns: [function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
+  return _c('div', {
+    staticClass: "form-group"
+  }, [_c('button', {
+    staticClass: "btn btn-primary",
+    attrs: {
+      "type": "submit"
+    }
+  }, [_vm._v("Tweet")])])
+}]}
+module.exports.render._withStripped = true
+if (false) {
+  module.hot.accept()
+  if (module.hot.data) {
+     require("vue-hot-reload-api").rerender("data-v-ec81d276", module.exports)
+  }
+}
+
+/***/ }),
+/* 18 */
 /***/ (function(module, exports, __webpack_require__) {
 
 module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
@@ -1253,16 +1504,78 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     return _c('div', {
       staticClass: "panel-body"
     }, [(message.answer) ? _c('div', {
-      staticClass: "form-group",
-      staticStyle: {
-        "background": "lightgreen",
-        "border": "1px solid red"
-      }
-    }, [_c('span', [_vm._v("reply ")]), _vm._v(" "), _c('div', {
-      staticClass: "info"
-    }, [_vm._v("\n                            " + _vm._s(message.text) + "\n                        ")])]) : _c('div', {
       staticClass: "form-group"
-    }, [_vm._v("\n\n                        " + _vm._s(message.text) + "\n                    ")]), _vm._v(" "), (message.retweeter != null) ? _c('div', {
+    }, [_vm._v("\n\n                        " + _vm._s(message.text) + "\n                        "), _c('span', [_vm._v("replies ")]), _vm._v(" "), _c('div', {
+      staticClass: "col-md-8 col-md-offset-2"
+    }, [_c('div', {
+      staticClass: "panel panel-default"
+    }, _vm._l((message.messages), function(reply) {
+      return _c('div', {
+        staticClass: "panel-body"
+      }, [_vm._v("\n                                    " + _vm._s(reply.text) + "\n                                    "), (reply.user_id == _vm.user_id) ? _c('div', {
+        staticClass: "form-group"
+      }, [_c('button', {
+        staticClass: "btn btn-danger",
+        attrs: {
+          "type": "submit"
+        },
+        on: {
+          "click": function($event) {
+            _vm.deleteReply(message, reply)
+          }
+        }
+      }, [_vm._v("delete")])]) : _vm._e(), _vm._v(" "), (reply.retweeter != _vm.user_id) ? _c('div', {
+        staticClass: "form-group"
+      }, [_c('div', {
+        staticClass: "form-group"
+      }, [_c('button', {
+        staticClass: "btn btn-info",
+        attrs: {
+          "type": "submit"
+        },
+        on: {
+          "click": function($event) {
+            _vm.reMessage(reply)
+          }
+        }
+      }, [_vm._v("retweet")])])]) : _c('div', {
+        staticClass: "form-group"
+      }, [_c('div', {
+        staticClass: "form-group"
+      }, [_c('button', {
+        staticClass: "btn btn-danger",
+        attrs: {
+          "type": "submit"
+        },
+        on: {
+          "click": function($event) {
+            _vm.unReMessage(reply)
+          }
+        }
+      }, [_vm._v("unretweet")])])]), _vm._v(" "), _c('div', {
+        staticClass: "form-group"
+      }, [_c('button', {
+        staticClass: "btn btn-primary",
+        on: {
+          "click": function($event) {
+            _vm.toReply(reply)
+          }
+        }
+      }, [_vm._v("reply")]), _vm._v(" "), (reply.reply) ? _c('Reply', {
+        attrs: {
+          "messages": _vm.messages,
+          "id": reply.id,
+          "user": _vm.user
+        },
+        on: {
+          "update:messages": function($event) {
+            _vm.messages = $event
+          }
+        }
+      }) : _vm._e()], 1)])
+    }))])]) : _c('div', {
+      staticClass: "form-group"
+    }, [_vm._v("\n\n                        " + _vm._s(message.text) + "\n\n                    ")]), _vm._v(" "), (message.retweeter != null) ? _c('div', {
       staticClass: "form-group"
     }, [_c('span', [_vm._v("retweet by : " + _vm._s(message.retweeter_name))])]) : _vm._e(), _vm._v(" "), _c('br'), _vm._v(" "), (message.user_id == _vm.user_id) ? _c('div', {
       staticClass: "form-group"
@@ -1308,15 +1621,23 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
       staticClass: "form-group"
     }, [_c('button', {
       staticClass: "btn btn-primary",
-      attrs: {
-        "type": "submit"
-      },
       on: {
         "click": function($event) {
-          _vm.replyToMessage(message)
+          _vm.toReply(message)
         }
       }
-    }, [_vm._v("reply")])]), _vm._v("\n                    " + _vm._s(message.user_id) + "\n                ")])
+    }, [_vm._v("reply")]), _vm._v(" "), (message.reply) ? _c('Reply', {
+      attrs: {
+        "messages": _vm.messages,
+        "id": message.id,
+        "user": _vm.user
+      },
+      on: {
+        "update:messages": function($event) {
+          _vm.messages = $event
+        }
+      }
+    }) : _vm._e()], 1), _vm._v("\n                    " + _vm._s(message.user_id) + "\n                ")])
   }))])])
 },staticRenderFns: [function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
   return _c('div', {
@@ -1337,15 +1658,15 @@ if (false) {
 }
 
 /***/ }),
-/* 16 */
+/* 19 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var disposed = false
 var Component = __webpack_require__(1)(
   /* script */
-  __webpack_require__(17),
+  __webpack_require__(20),
   /* template */
-  __webpack_require__(18),
+  __webpack_require__(21),
   /* styles */
   null,
   /* scopeId */
@@ -1377,7 +1698,7 @@ module.exports = Component.exports
 
 
 /***/ }),
-/* 17 */
+/* 20 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -1484,7 +1805,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 });
 
 /***/ }),
-/* 18 */
+/* 21 */
 /***/ (function(module, exports, __webpack_require__) {
 
 module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
@@ -1571,11 +1892,11 @@ if (false) {
 }
 
 /***/ }),
-/* 19 */
+/* 22 */
 /***/ (function(module, exports, __webpack_require__) {
 
 
-window._ = __webpack_require__(20);
+window._ = __webpack_require__(23);
 
 /**
  * We'll load jQuery and the Bootstrap jQuery plugin which provides support
@@ -1584,9 +1905,9 @@ window._ = __webpack_require__(20);
  */
 
 try {
-  window.$ = window.jQuery = __webpack_require__(23);
+  window.$ = window.jQuery = __webpack_require__(26);
 
-  __webpack_require__(24);
+  __webpack_require__(27);
 } catch (e) {}
 
 /**
@@ -1595,7 +1916,7 @@ try {
  * CSRF token as a header based on the value of the "XSRF" token cookie.
  */
 
-window.axios = __webpack_require__(25);
+window.axios = __webpack_require__(28);
 
 window.axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
 
@@ -1629,7 +1950,7 @@ if (token) {
 // });
 
 /***/ }),
-/* 20 */
+/* 23 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(global, module) {var __WEBPACK_AMD_DEFINE_RESULT__;/**
@@ -18718,10 +19039,10 @@ if (token) {
   }
 }.call(this));
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(21), __webpack_require__(22)(module)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(24), __webpack_require__(25)(module)))
 
 /***/ }),
-/* 21 */
+/* 24 */
 /***/ (function(module, exports) {
 
 var g;
@@ -18748,7 +19069,7 @@ module.exports = g;
 
 
 /***/ }),
-/* 22 */
+/* 25 */
 /***/ (function(module, exports) {
 
 module.exports = function(module) {
@@ -18776,7 +19097,7 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 23 */
+/* 26 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*!
@@ -29036,7 +29357,7 @@ return jQuery;
 
 
 /***/ }),
-/* 24 */
+/* 27 */
 /***/ (function(module, exports) {
 
 /*!
@@ -31419,13 +31740,13 @@ if (typeof jQuery === 'undefined') {
 
 
 /***/ }),
-/* 25 */
+/* 28 */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__(26);
+module.exports = __webpack_require__(29);
 
 /***/ }),
-/* 26 */
+/* 29 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -31433,7 +31754,7 @@ module.exports = __webpack_require__(26);
 
 var utils = __webpack_require__(0);
 var bind = __webpack_require__(3);
-var Axios = __webpack_require__(28);
+var Axios = __webpack_require__(31);
 var defaults = __webpack_require__(2);
 
 /**
@@ -31468,14 +31789,14 @@ axios.create = function create(instanceConfig) {
 
 // Expose Cancel & CancelToken
 axios.Cancel = __webpack_require__(7);
-axios.CancelToken = __webpack_require__(43);
+axios.CancelToken = __webpack_require__(46);
 axios.isCancel = __webpack_require__(6);
 
 // Expose all/spread
 axios.all = function all(promises) {
   return Promise.all(promises);
 };
-axios.spread = __webpack_require__(44);
+axios.spread = __webpack_require__(47);
 
 module.exports = axios;
 
@@ -31484,7 +31805,7 @@ module.exports.default = axios;
 
 
 /***/ }),
-/* 27 */
+/* 30 */
 /***/ (function(module, exports) {
 
 /*!
@@ -31511,7 +31832,7 @@ function isSlowBuffer (obj) {
 
 
 /***/ }),
-/* 28 */
+/* 31 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -31519,10 +31840,10 @@ function isSlowBuffer (obj) {
 
 var defaults = __webpack_require__(2);
 var utils = __webpack_require__(0);
-var InterceptorManager = __webpack_require__(38);
-var dispatchRequest = __webpack_require__(39);
-var isAbsoluteURL = __webpack_require__(41);
-var combineURLs = __webpack_require__(42);
+var InterceptorManager = __webpack_require__(41);
+var dispatchRequest = __webpack_require__(42);
+var isAbsoluteURL = __webpack_require__(44);
+var combineURLs = __webpack_require__(45);
 
 /**
  * Create a new instance of Axios
@@ -31604,7 +31925,7 @@ module.exports = Axios;
 
 
 /***/ }),
-/* 29 */
+/* 32 */
 /***/ (function(module, exports) {
 
 // shim for using process in browser
@@ -31794,7 +32115,7 @@ process.umask = function() { return 0; };
 
 
 /***/ }),
-/* 30 */
+/* 33 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -31813,7 +32134,7 @@ module.exports = function normalizeHeaderName(headers, normalizedName) {
 
 
 /***/ }),
-/* 31 */
+/* 34 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -31846,7 +32167,7 @@ module.exports = function settle(resolve, reject, response) {
 
 
 /***/ }),
-/* 32 */
+/* 35 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -31874,7 +32195,7 @@ module.exports = function enhanceError(error, config, code, request, response) {
 
 
 /***/ }),
-/* 33 */
+/* 36 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -31949,7 +32270,7 @@ module.exports = function buildURL(url, params, paramsSerializer) {
 
 
 /***/ }),
-/* 34 */
+/* 37 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -31993,7 +32314,7 @@ module.exports = function parseHeaders(headers) {
 
 
 /***/ }),
-/* 35 */
+/* 38 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -32068,7 +32389,7 @@ module.exports = (
 
 
 /***/ }),
-/* 36 */
+/* 39 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -32111,7 +32432,7 @@ module.exports = btoa;
 
 
 /***/ }),
-/* 37 */
+/* 40 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -32171,7 +32492,7 @@ module.exports = (
 
 
 /***/ }),
-/* 38 */
+/* 41 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -32230,14 +32551,14 @@ module.exports = InterceptorManager;
 
 
 /***/ }),
-/* 39 */
+/* 42 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
 var utils = __webpack_require__(0);
-var transformData = __webpack_require__(40);
+var transformData = __webpack_require__(43);
 var isCancel = __webpack_require__(6);
 var defaults = __webpack_require__(2);
 
@@ -32316,7 +32637,7 @@ module.exports = function dispatchRequest(config) {
 
 
 /***/ }),
-/* 40 */
+/* 43 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -32343,7 +32664,7 @@ module.exports = function transformData(data, headers, fns) {
 
 
 /***/ }),
-/* 41 */
+/* 44 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -32364,7 +32685,7 @@ module.exports = function isAbsoluteURL(url) {
 
 
 /***/ }),
-/* 42 */
+/* 45 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -32385,7 +32706,7 @@ module.exports = function combineURLs(baseURL, relativeURL) {
 
 
 /***/ }),
-/* 43 */
+/* 46 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -32449,7 +32770,7 @@ module.exports = CancelToken;
 
 
 /***/ }),
-/* 44 */
+/* 47 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -32483,7 +32804,7 @@ module.exports = function spread(callback) {
 
 
 /***/ }),
-/* 45 */
+/* 48 */
 /***/ (function(module, exports) {
 
 // removed by extract-text-webpack-plugin

@@ -12,9 +12,12 @@ use Illuminate\Database\Eloquent\Model;
 class MessageReplie extends Model
 {
     //
-
+    protected $fillable = ['answer_id','message_id'];
     public function messages()
     {
-        return  $this->belongsTo('App\Message','message_id','id');
+        return  $this->belongsTo('App\Message','answer_id','id');
+    }
+    public function scopeHasanswer($query ,$id){
+        return $query->where('message_id',$id)->count()>0;
     }
 }

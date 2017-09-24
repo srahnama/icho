@@ -17,7 +17,7 @@ Icho!
 
 
 
-                <Message></Message>
+                <Message :user="{{Auth::user()}}"></Message>
 
             @endguest
 <Example></Example>

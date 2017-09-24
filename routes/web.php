@@ -24,6 +24,7 @@ Route::resource('/users', 'UserController')->middleware('auth');
 Route::resource('/follow', 'FollowUserController')->middleware('auth');
 Route::resource('/remessage', 'MessageRetweetController')->middleware('auth');
 Route::resource('/reply', 'MessageReplieController')->middleware('auth');
+Route::delete('/reply/{id}/{mid}', 'MessageReplieController@destroy')->middleware('auth');
 
 
 

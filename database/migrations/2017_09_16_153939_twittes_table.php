@@ -39,7 +39,7 @@ class TwittesTable extends Migration
             $table->integer('message_id')->unsigned();
             $table->foreign('message_id')->references('id')->on('messages')->onDelete('cascade');
             $table->integer('answer_id')->unsigned();
-            $table->foreign('answer_id')->references('id')->on('users')->onDelete('cascade');
+            $table->foreign('answer_id')->references('id')->on('messages')->onDelete('cascade');
             $table->timestamps();
         });
         //table for like messages
