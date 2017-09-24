@@ -68,7 +68,7 @@ class MessageReplieController extends Controller
         //
         $idd =  MessageReplie::where('message_id',$id)->pluck('id');
 
-        $message = new MessageReplie;
+        //$message = new MessageReplie;
         return response()->json([
             'messages' =>  MessageReplie::find($idd[0])->messages()->get(),
             'id' =>  $idd[0]
@@ -109,16 +109,13 @@ class MessageReplieController extends Controller
 
     public function destroy($reply_id,$message_id)
     {
-        //
-//        Route::delete('/messages/'+$id, 'MessageController@destroy');
-        //$message_id = MessageReplie::where('answer_id',$id)->first();
-//        var_dump(MessageReplie::hasanswer($message_id[0]));
+         //set answer flag of message false if have not any reply
         if(!MessageReplie::hasanswer($message_id)){
             $message = Message::find($message_id);
             $message->answer = false;
             $message->save();
         }
-
+        //remove message_id and answer_id in message_replies table
         MessageReplie::where('answer_id',$reply_id)
             ->where('message_id',$message_id)
             ->delete();

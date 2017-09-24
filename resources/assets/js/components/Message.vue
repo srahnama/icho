@@ -190,11 +190,6 @@
                         var index = this.messages.indexOf(this.messages[i]);
                         this.$http.get('/reply/' + this.messages[i].id).then((response) => {
 
-//                            for (var i = 0; i < response.data.messages.length; i++) {
-//                                this.messages.splice(index - 1, 0, response.data.messages[i]);
-//                            }
-
-                           // this.messages[i].concat(response.data);
                             this.messages[index]['messages'] =(response.data.messages);
 
 
