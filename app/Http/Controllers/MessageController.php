@@ -22,7 +22,7 @@ class MessageController extends Controller
             return response()->json([
                 'messages' =>Message::whereIn('user_id',User::userfollowing())->get(),
                 'user_id' => Auth::user()->id
-            ]);//view('index');
+            ],200,[],JSON_PRETTY_PRINT);//view('index');
         return view('index');
     }
 

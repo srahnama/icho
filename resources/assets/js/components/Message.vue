@@ -47,7 +47,7 @@
                                             </div>
                                         </div>
                                         <div  class="form-group">
-                                            <button  v-on:click="toReply(reply)" class="btn btn-primary">reply</button>
+                                            <button  v-on:click="replyToReply(reply ,message)" class="btn btn-primary">reply</button>
                                             <Reply  v-if="reply.reply" :messages.sync="messages" :id="reply.id" :user="user" ></Reply>
 
                                         </div>
@@ -86,7 +86,8 @@
                             <Reply  v-if="message.reply" :messages.sync="messages" :id="message.id" :user="user" ></Reply>
 
                         </div>
-                        {{ message.user_id }}
+                        <!--{{ message.user_id }}-->
+                        {{ message.id }}
                     </div>
                 </div>
             </div>
@@ -128,6 +129,7 @@
             fetchMessages() {//fetch messages and user id
                 this.$http.get('/messages').then(response => {
                     this.messages = response.data.messages;//get all messages in database that should be seen by user
+                    console.log(this.messages);
                     this.user_id = response.data.user_id;//get id of login user
                     this.$emit('loadedMessages')
                 }).then(
@@ -153,7 +155,7 @@
                 this.$http.delete('/messages/' + message.id).then(response => {
                     let index = this.messages.indexOf(message);//get index of message that was deleted
                     this.messages.splice(index, 1);//delete message in array messages
-                    console.log(response.data);
+                  //  console.log(response.data);
 
                 });
 
@@ -181,16 +183,34 @@
                     console.log(response.data.message);
                 });
             },
-            fetchReplies() {//work like retweet
-                console.log(this.messages);
+            fetchReplies() {
+                //work like retweet
+              //  console.log(this.messages);
                 for (var i = 0; i < this.messages.length; i++) {
                     this.messages[i]['reply'] = false;
                     this.messages[i]['messages'] = [];
+                    //console.log(this.messages[i]['answer']);
                     if (this.messages[i]['answer']) {
                         var index = this.messages.indexOf(this.messages[i]);
                         this.$http.get('/reply/' + this.messages[i].id).then((response) => {
+                           // console.log( "reply");
+
 
                             this.messages[index]['messages'] =(response.data.messages);
+                            for (var i = 0; i < this.messages[index]['messages'].length; i++) {
+                                console.log( this.messages[index]['messages'][i]['reply']=false);
+                                this.messages[index]['messages'][i]['reply'] = false;
+                            }
+
+                            var reply;
+                            response.data.messages.forEach( (reply)=>{
+                                var i = this.messages.indexOf(reply);
+                                this.messages.splice(i);
+                            } );
+                            {
+
+                            }
+
 
 
                         });
@@ -215,6 +235,17 @@
                 var index = this.messages.indexOf(message);
                 //this.$set(message.reply , !message.reply);
                 this.messages[index].reply = !this.messages[index].reply;
+                // console.log(!this.messages[index].reply);
+                this.$forceUpdate();
+                //alert(this.messages[index].reply);
+            },
+            replyToReply(reply,message) {//reply to message
+                var index = this.messages.indexOf(message);
+                var i = this.messages[index].messages.indexOf(reply);
+                //this.$set(message.reply , !message.reply);
+                console.log(this.messages[index].messages);
+                console.log(this.messages[index][i]);
+                this.messages[index]['messages'][i].reply = !this.messages[index]['messages'][i].reply;
                 // console.log(!this.messages[index].reply);
                 this.$forceUpdate();
                 //alert(this.messages[index].reply);

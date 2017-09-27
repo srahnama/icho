@@ -20,7 +20,7 @@ class Message extends Model
     }
     public function answers()
     {
-        return  $this->hasMany('App\MessageReplie','message_id','id');
+        return  $this->hasMany('App\MessageReplie','answer_id','id');
     }
 
 }

@@ -1124,6 +1124,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
 
 
 
@@ -1160,6 +1161,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             //fetch messages and user id
             this.$http.get('/messages').then(function (response) {
                 _this.messages = response.data.messages; //get all messages in database that should be seen by user
+                console.log(_this.messages);
                 _this.user_id = response.data.user_id; //get id of login user
                 _this.$emit('loadedMessages');
             }).then();
@@ -1183,7 +1185,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             this.$http.delete('/messages/' + message.id).then(function (response) {
                 var index = _this3.messages.indexOf(message); //get index of message that was deleted
                 _this3.messages.splice(index, 1); //delete message in array messages
-                console.log(response.data);
+                //  console.log(response.data);
             });
         },
         fetchReMessages: function fetchReMessages() {
@@ -1219,20 +1221,29 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             var _this7 = this;
 
             //work like retweet
-            console.log(this.messages);
+            //  console.log(this.messages);
             for (var i = 0; i < this.messages.length; i++) {
                 this.messages[i]['reply'] = false;
                 this.messages[i]['messages'] = [];
+                //console.log(this.messages[i]['answer']);
                 if (this.messages[i]['answer']) {
                     var index = this.messages.indexOf(this.messages[i]);
                     this.$http.get('/reply/' + this.messages[i].id).then(function (response) {
+                        // console.log( "reply");
 
-                        //                            for (var i = 0; i < response.data.messages.length; i++) {
-                        //                                this.messages.splice(index - 1, 0, response.data.messages[i]);
-                        //                            }
 
-                        // this.messages[i].concat(response.data);
                         _this7.messages[index]['messages'] = response.data.messages;
+                        for (var i = 0; i < _this7.messages[index]['messages'].length; i++) {
+                            console.log(_this7.messages[index]['messages'][i]['reply'] = false);
+                            _this7.messages[index]['messages'][i]['reply'] = false;
+                        }
+
+                        var reply;
+                        response.data.messages.forEach(function (reply) {
+                            var i = _this7.messages.indexOf(reply);
+                            _this7.messages.splice(i);
+                        });
+                        {}
                     });
                 }
             }
@@ -1253,6 +1264,18 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             var index = this.messages.indexOf(message);
             //this.$set(message.reply , !message.reply);
             this.messages[index].reply = !this.messages[index].reply;
+            // console.log(!this.messages[index].reply);
+            this.$forceUpdate();
+            //alert(this.messages[index].reply);
+        },
+        replyToReply: function replyToReply(reply, message) {
+            //reply to message
+            var index = this.messages.indexOf(message);
+            var i = this.messages[index].messages.indexOf(reply);
+            //this.$set(message.reply , !message.reply);
+            console.log(this.messages[index].messages);
+            console.log(this.messages[index][i]);
+            this.messages[index]['messages'][i].reply = !this.messages[index]['messages'][i].reply;
             // console.log(!this.messages[index].reply);
             this.$forceUpdate();
             //alert(this.messages[index].reply);
@@ -1558,7 +1581,7 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
         staticClass: "btn btn-primary",
         on: {
           "click": function($event) {
-            _vm.toReply(reply)
+            _vm.replyToReply(reply, message)
           }
         }
       }, [_vm._v("reply")]), _vm._v(" "), (reply.reply) ? _c('Reply', {
@@ -1637,7 +1660,7 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
           _vm.messages = $event
         }
       }
-    }) : _vm._e()], 1), _vm._v("\n                    " + _vm._s(message.user_id) + "\n                ")])
+    }) : _vm._e()], 1), _vm._v(" "), _vm._v("\n                    " + _vm._s(message.id) + "\n                ")])
   }))])])
 },staticRenderFns: [function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
   return _c('div', {

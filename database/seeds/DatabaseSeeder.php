@@ -11,24 +11,28 @@ class DatabaseSeeder extends Seeder
      */
     public function run()
     {
+        //\App\User::query()->truncate();
+        factory(\App\User::class,15)->create();
+      //  \App\Message::query()->truncate();
+        factory(\App\Message::class,15)->create();
         // $this->call(UsersTableSeeder::class);
-        for($i=1,$j=15;$i<=15;$i++,$j--){
-            //'users' table seeder
-            DB::table('users')->insert([
-                'name'     => str_random(10),
-                'email'    => str_random(10).'@gmail.com',
-                'password' => bcrypt('secret'),
+//        for($i=1,$j=15;$i<=15;$i++,$j--){
+//            //'users' table seeder
+//            DB::table('users')->insert([
+//                'name'     => str_random(10),
+//                'email'    => str_random(10).'@gmail.com',
+//                'password' => bcrypt('secret'),
+//
+//            ]);
 
-            ]);
-
-            //'messages' table
-            DB::table('messages')->insert([
-                'text'     => str_random(70),
-                'answer'     => false,
-                'user_id'    => ($i),
-            ]);
-
-        }
+//            //'messages' table
+//            DB::table('messages')->insert([
+//                'text'     => str_random(70),
+//                'answer'     => false,
+//                'user_id'    => ($i),
+//            ]);
+//
+//        }
         for($i=1,$j=15;$i<=15;$i++,$j--){
 
             //'messages' table

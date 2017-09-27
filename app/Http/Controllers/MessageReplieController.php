@@ -66,12 +66,18 @@ class MessageReplieController extends Controller
     public function show(MessageReplie $messageReplie,$id)
     {
         //
-        $idd =  MessageReplie::where('message_id',$id)->pluck('id');
-
-        //$message = new MessageReplie;
+        $messages =  MessageReplie::where('message_id','=',$id)->get();
+        $result = [];
+        for ($i = 0 ;$i<sizeof($messages) ;$i++)
+        {
+            array_push($result,$messages[$i]->messages);
+        }
+        //$messages =  MessageReplie::all();
         return response()->json([
-            'messages' =>  MessageReplie::find($idd[0])->messages()->get(),
-            'id' =>  $idd[0]
+            'messages' =>  $result,
+            //'answer' =>  $messages->first(),
+            //'answers' =>  $messages->messages,
+            'id' =>  $id
         ],200,[],JSON_PRETTY_PRINT);
 
     }
